@@ -1,0 +1,676 @@
+:root {
+    --primary-color: #ffffff;
+    --accent-color: #888888;
+    --bg-dark: #050505;
+    --glass-bg: rgba(0, 0, 0, 0.5);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --glow-color: rgba(255, 255, 255, 0.15);
+    
+    /* Couleurs officielles des réseaux */
+    --discord: #5865F2;
+    --twitch: #9146FF;
+    --youtube: #FF0000;
+    --tiktok: #000000;
+    
+    /* Couleurs des statuts Discord */
+    --status-online: #43b581;
+    --status-idle: #faa61a;
+    --status-dnd: #f04747;
+    --status-offline: #747f8d;
+    
+    /* URL de la bannière - CHANGEZ CETTE URL */
+    --banner-url: url('https://i.pinimg.com/736x/6f/bc/19/6fbc19c2f2bbfa197289a378295526ef.jpg');
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    background-color: var(--bg-dark);
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    position: relative;
+    touch-action: manipulation;
+}
+
+/* --- Écran d'entrée --- */
+#enter-screen {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#enter-screen.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: scale(1.1);
+}
+
+#enter-screen h1 {
+    font-size: clamp(1.8rem, 7vw, 4rem);
+    font-weight: 900;
+    letter-spacing: 8px;
+    text-transform: uppercase;
+    color: white;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    filter: drop-shadow(0 0 20px var(--glow-color));
+    padding: 0 20px;
+}
+
+.enter-btn {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: white;
+    padding: 12px 30px;
+    font-size: 0.95rem;
+    border-radius: 4px;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    transition: 0.4s;
+    font-weight: 500;
+}
+
+.enter-btn:hover {
+    background: white;
+    color: black;
+    box-shadow: 0 0 30px white;
+}
+
+/* --- Background Video --- */
+.video-background {
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    overflow: hidden;
+    background: #000;
+}
+
+.video-background video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.7;
+    filter: grayscale(0.5) blur(1px);
+    transition: opacity 1s ease;
+}
+
+.video-overlay {
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.7) 100%);
+    z-index: -1;
+}
+
+/* --- Container Principal --- */
+.container {
+    width: 95%;
+    max-width: 405px;
+    background: transparent;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+    margin: 20px;
+    position: relative;
+}
+
+.container.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* --- Carte style Discord avec transparence SANS BLUR --- */
+.discord-card {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.65); /* Noir semi-transparent sans blur */
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    position: relative;
+}
+
+/* Effet de brillance subtile */
+.discord-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.1) 0%, transparent 60%);
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+/* --- Bannière Discord --- */
+.discord-banner {
+    width: 100%;
+    height: 135px;
+    background-image: var(--banner-url);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.banner-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, transparent 40%, rgba(0, 0, 0, 0.8) 100%);
+    pointer-events: none;
+}
+
+/* --- Section Profil --- */
+.profile-section {
+    position: relative;
+    padding: 0 20px 20px;
+    margin-top: -36px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.profile-img-wrapper {
+    position: relative;
+    width: 81px;
+    height: 81px;
+    margin-bottom: 13.5px;
+    filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.5));
+}
+
+.profile-image {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid rgba(255, 255, 255, 0.2);
+    background: rgba(30, 31, 34, 0.5);
+    position: relative;
+    z-index: 2;
+}
+
+/* Status Discord Indicator */
+.status-indicator {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 3px solid rgba(0, 0, 0, 0.8);
+    z-index: 10;
+    transition: all 0.3s ease;
+}
+
+.status-indicator.online {
+    background-color: var(--status-online);
+}
+.status-indicator.idle {
+    background-color: var(--status-idle);
+}
+.status-indicator.dnd {
+    background-color: var(--status-dnd);
+}
+.status-indicator.offline {
+    background-color: var(--status-offline);
+}
+
+.profile-decoration {
+    position: absolute;
+    top: -10.8px;
+    left: -10.8px;
+    width: 102.6px;
+    height: 102.6px;
+    background-image: url('https://i.imgur.com/L8cpGrE.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    pointer-events: none;
+    z-index: 3;
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
+    opacity: 0.8;
+}
+
+/* Cadre rotatif */
+.profile-img-wrapper::after {
+    content: '';
+    position: absolute;
+    inset: -5.4px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    animation: rotate 10s linear infinite;
+    z-index: 1;
+}
+
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Informations utilisateur */
+.user-info {
+    width: 100%;
+    margin-top: 4.5px;
+}
+
+.name-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.name {
+    font-size: 1.62rem;
+    font-weight: 900;
+    letter-spacing: 1px;
+    background: linear-gradient(to bottom, #fff, #ccc);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.discord-tag {
+    font-size: 0.765rem;
+    color: #e0e0e0;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 3.6px 10.8px;
+    border-radius: 100px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    margin-bottom: 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 7.2px;
+}
+
+.discord-tag i {
+    color: #5865F2;
+}
+
+/* Status Message */
+.status-message {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 15px;
+}
+
+.custom-status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #e0e0e0;
+    font-size: 0.85rem;
+}
+
+.custom-status i {
+    color: var(--status-online);
+    font-size: 0.9rem;
+}
+
+.activity {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.activity-details {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.activity-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.activity-icon i {
+    font-size: 1.2rem;
+    color: #5865F2;
+}
+
+.activity-text {
+    flex: 1;
+}
+
+.activity-name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: white;
+    margin-bottom: 2px;
+}
+
+.activity-state {
+    font-size: 0.75rem;
+    color: #b5bac1;
+}
+
+.activity-timestamp {
+    font-size: 0.7rem;
+    color: #80848e;
+    margin-top: 2px;
+}
+
+.spotify-status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 5px;
+}
+
+.spotify-cover {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    background-size: cover;
+    background-position: center;
+}
+
+.spotify-info {
+    flex: 1;
+}
+
+.spotify-song {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #1DB954;
+    margin-bottom: 2px;
+}
+
+.spotify-artist {
+    font-size: 0.75rem;
+    color: #b5bac1;
+}
+
+/* --- Player Audio --- */
+.player {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 12px;
+    padding: 13.5px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    margin: 4.5px 0 13.5px;
+}
+
+.player-info {
+    display: flex;
+    align-items: center;
+    gap: 10.8px;
+    margin-bottom: 13.5px;
+}
+
+.track-cover {
+    width: 40.5px;
+    height: 40.5px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.track-text h3 { 
+    font-size: 0.81rem;
+    margin-bottom: 1.8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 180px;
+    color: white;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+.track-text p { 
+    font-size: 0.63rem;
+    color: #d0d0d0; 
+}
+
+.progress-area {
+    width: 100%;
+    height: 3.6px;
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 10px;
+    cursor: pointer;
+    margin-bottom: 10.8px;
+    position: relative;
+}
+
+.progress-bar {
+    height: 100%;
+    width: 0%;
+    background: #5865F2;
+    border-radius: 10px;
+    position: relative;
+    transition: width 0.1s linear;
+}
+
+.player-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 18px;
+}
+
+.btn-ctrl {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 0.99rem;
+    cursor: pointer;
+    opacity: 0.8;
+    transition: 0.3s;
+    padding: 7.2px;
+    min-width: 39.6px;
+    min-height: 39.6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-ctrl:active { 
+    opacity: 1; 
+    transform: scale(0.95); 
+}
+.btn-play { 
+    font-size: 1.44rem;
+    opacity: 1; 
+    color: white;
+}
+
+/* --- Social Grid --- */
+.social-section {
+    padding: 0 20px 20px;
+    background: transparent;
+}
+
+.social-title {
+    font-size: 0.675rem;
+    text-transform: uppercase;
+    letter-spacing: 1.8px;
+    color: #ccc;
+    margin-bottom: 13.5px;
+    font-weight: 600;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.social-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10.8px;
+    width: 100%;
+}
+
+.social-item {
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7.2px;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    text-decoration: none;
+    color: white;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    padding: 0 7.2px;
+    font-size: 0.765rem;
+    white-space: nowrap;
+}
+
+.social-item i {
+    font-size: 1.08rem;
+    transition: all 0.3s ease;
+}
+
+.social-item span {
+    font-size: 0.675rem;
+    font-weight: 500;
+    display: inline-block;
+}
+
+/* Couleurs spécifiques au survol */
+.social-item.discord:hover {
+    background: var(--discord);
+    border-color: var(--discord);
+}
+
+.social-item.twitch:hover {
+    background: var(--twitch);
+    border-color: var(--twitch);
+}
+
+.social-item.youtube:hover {
+    background: var(--youtube);
+    border-color: var(--youtube);
+}
+
+.social-item.tiktok:hover {
+    background: var(--tiktok);
+    border-color: var(--tiktok);
+}
+
+.social-item:hover i,
+.social-item:hover span {
+    color: white;
+}
+
+.social-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.social-item:hover::before {
+    left: 100%;
+}
+
+/* --- Footer --- */
+.footer {
+    margin-top: 18px;
+    font-size: 0.585rem;
+    text-transform: uppercase;
+    letter-spacing: 0.9px;
+    opacity: 0.4;
+    text-align: center;
+    width: 100%;
+    padding: 0 18px;
+    color: white;
+}
+
+/* --- Responsive --- */
+@media (max-width: 480px) {
+    .container {
+        max-width: 100%;
+        margin: 10px;
+    }
+    
+    .discord-banner {
+        height: 108px;
+    }
+    
+    .profile-section {
+        padding: 0 13.5px 13.5px;
+        margin-top: -31.5px;
+    }
+    
+    .profile-img-wrapper {
+        width: 72px;
+        height: 72px;
+    }
+    
+    .profile-decoration {
+        width: 93.6px;
+        height: 93.6px;
+        top: -10.8px;
+        left: -10.8px;
+    }
+    
+    .name {
+        font-size: 1.35rem;
+    }
+    
+    .social-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 7.2px;
+    }
+    
+    .social-item {
+        height: 40.5px;
+        padding: 0 3.6px;
+    }
+    
+    .social-item i {
+        font-size: 0.99rem;
+    }
+    
+    .social-item span {
+        font-size: 0.63rem;
+    }
+}
+
+@media (max-width: 380px) {
+    .social-item span {
+        display: none;
+    }
+    
+    .social-item {
+        min-width: auto;
+        width: 100%;
+    }
+    
+    .social-item i {
+        font-size: 1.17rem;
+    }
+}
